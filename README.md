@@ -11,10 +11,3 @@
 * **Auto-Install:** Самостійно стягує `.run` інсталятор, чистить старі файли та запускає встановлення з оптимізованими прапорцями (`clang`/`lld`, DKMS, systemd, initramfs).
 * **Interactive:** Безпечні запити підтвердження (`y/N`) перед кожною важливою дією.
 
----
-
-## 🛠️ Залежності та налаштування
-
-### Python
-```bash
-pip install beautifulsoup4 requests selenium packaging****
