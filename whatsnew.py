@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import os
 from bs4 import BeautifulSoup as bs  # type: ignore
 import requests as req
 import subprocess as sub
@@ -11,7 +12,7 @@ from selenium.webdriver.firefox.options import Options # type: ignore
 
 kernel_url = "https://www.kernel.org/"
 nvidia_url = "https://www.nvidia.com/en-us/drivers/unix/"
-nv_run = f"CC=clang LD=ld.lld HOSTCC=clang HOSTLD=ld.lld IGNORE_CC_MISMATCH=1 /home/silentlexx/src/NVIDIA_Latest.run"
+nv_run = f"/tmp/NVIDIA_Latest.run"
 
 GECKODRIVER_PATH = '/home/silentlexx/src/geckodriver' 
 
@@ -95,7 +96,26 @@ def dwn_nv(url):
             sub.run(["rm", nv_run], text=False)
             sub.run(["wget", "-O", nv_run, file], text=True)
             sub.run(["chmod", "+x", nv_run], text=False)
-            sub.run(["sudo", nv_run, "--accept-license","--no-rpms", "--no-recursion", "--dkms", "--install-libglvnd", "--force-libglx-indirect", "--no-check-for-alternate-installs", "--no-precompiled-interface", "--no-x-check", "--allow-installation-with-running-driver","--rebuild-initramfs", "--systemd" ], text=True )
+            
+            custom_env = os.environ.copy()
+            custom_env.update({
+                "CC": "clang",
+                "LD": "ld.lld",
+                "HOSTCC": "clang",
+                "HOSTLD": "ld.lld",
+                "IGNORE_CC_MISMATCH": "1"
+            })
+
+            # Запускаємо з прапорцем -E та параметром env
+            sub.run([
+                "sudo", "-E", nv_run, 
+                "--accept-license", "--no-rpms", "--no-recursion", "--dkms", 
+                "--install-libglvnd", "--force-libglx-indirect", 
+                "--no-check-for-alternate-installs", "--no-precompiled-interface", 
+                "--no-x-check", "--allow-installation-with-running-driver", 
+                "--rebuild-initramfs", "--systemd"
+            ], text=True, env=custom_env)
+            
             reboot()
 
 def main():
