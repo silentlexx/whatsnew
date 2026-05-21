@@ -1,0 +1,22 @@
+#!/bin/bash
+
+cd /mnt/DATA/tmp
+git clone https://github.com/Frogging-Family/linux-tkg.git
+cd linux-tkg
+cat <<EOF > config.myfrag
+CONFIG_ANDROID=y
+CONFIG_ANDROID_BINDER_IPC=y
+CONFIG_ANDROID_BINDERFS=y
+CONFIG_ANDROID_BINDER_DEVICES="binder,hwbinder,vndbinder"
+CONFIG_MODULE_COMPRESS=y
+CONFIG_MODULE_COMPRESS_GZIP=n
+CONFIG_MODULE_COMPRESS_XZ=y
+CONFIG_BLK_PERCPU_BIO_CACHE=Y
+CONFIG_RUST=y
+CONFIG_DRM_NOVA=m
+CONFIG_DRM_NOUVEAU=n
+CONFIG_DRM_NOVA_GSP=m
+EOF
+./install.sh install
+cd ..
+rm -rf linux-tkg
